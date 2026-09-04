@@ -1,0 +1,4 @@
+import { supabase } from '../supabase.js';
+export const obtenerDesafiosActivos = async () => { const { data, error } = await supabase.from('desafios_activos').select('*').eq('estado', 'activo').gt('termina_en', new Date().toISOString()).order('termina_en'); if (error) throw error; return data || []; };
+export const obtenerDesafio = async (nombre) => { const { data, error } = await supabase.from('desafios_activos').select('*').ilike('titulo', `%${nombre}%`).limit(1).maybeSingle(); if (error) throw error; return data; };
+export const obtenerProgreso = async (miembroId) => { const { data, error } = await supabase.from('progreso_desafios').select('*, desafio:desafios_activos(*)').eq('miembro_id', miembroId); if (error) throw error; return data || []; };

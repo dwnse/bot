@@ -1,0 +1,5 @@
+import { supabase } from '../supabase.js';
+export const obtenerProximosEventos = async () => { const { data, error } = await supabase.from('eventos').select('*').eq('estado', 'publicado').gt('fecha_fin', new Date().toISOString()).order('fecha_inicio'); if (error) throw error; return data || []; };
+export const obtenerEvento = async (nombre) => { const { data, error } = await supabase.from('eventos').select('*').or(`slug.eq.${nombre},titulo.ilike.%${nombre}%`).limit(1).maybeSingle(); if (error) throw error; return data; };
+export const inscribirMiembro = async (eventoId, miembroId) => { const { data, error } = await supabase.from('participantes_eventos').insert({ evento_id: eventoId, miembro_id: miembroId, estado: 'inscrito' }).select().single(); if (error) throw error; return data; };
+export const obtenerParticipantes = async (eventoId) => { const { data, error } = await supabase.from('participantes_eventos').select('*, miembro:miembros(nombre_mostrar,nombre_usuario)').eq('evento_id', eventoId).eq('estado', 'inscrito'); if (error) throw error; return data || []; };
